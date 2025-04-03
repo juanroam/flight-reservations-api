@@ -1,6 +1,7 @@
 package com.juanroam.reservations.service;
 
 import com.juanroam.reservations.dto.ReservationDTO;
+import com.juanroam.reservations.enums.APIError;
 import com.juanroam.reservations.exception.ReservationException;
 import com.juanroam.reservations.model.Reservation;
 import com.juanroam.reservations.repository.ReservationRepository;
@@ -15,9 +16,9 @@ import java.util.Optional;
 @Service
 public class ReservationService {
 
-    private ReservationRepository repository;
+    private final ReservationRepository repository;
 
-    private ConversionService conversionService;
+    private final ConversionService conversionService;
 
     @Autowired
     public ReservationService(ReservationRepository repository,
@@ -33,14 +34,14 @@ public class ReservationService {
     public ReservationDTO getReservationById(Long id) {
         Optional<Reservation> result = repository.getReservationById(id);
         if(result.isEmpty()) {
-            throw new ReservationException("Not exist");
+            throw new ReservationException(APIError.RESERVATION_NOT_FOUND);
         }
         return conversionService.convert(result.get(), ReservationDTO.class);
     }
 
     public ReservationDTO save(ReservationDTO reservation) {
         if(Objects.nonNull(reservation.getId())) {
-            throw new ReservationException("Duplicate it");
+            throw new ReservationException(APIError.RESERVATION_WITH_SAME_ID);
         }
 
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
@@ -50,7 +51,7 @@ public class ReservationService {
 
     public ReservationDTO update(Long id, ReservationDTO reservation) {
         if(getReservationById(id) == null) {
-            throw new ReservationException("Not exist");
+            throw new ReservationException(APIError.RESERVATION_NOT_FOUND);
         }
 
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
@@ -60,7 +61,7 @@ public class ReservationService {
 
     public void delete(Long id) {
         if(getReservationById(id) == null) {
-            throw new ReservationException("Not exist");
+            throw new ReservationException(APIError.RESERVATION_NOT_FOUND);
         }
         repository.delete(id);
     }

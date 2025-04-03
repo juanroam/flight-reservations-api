@@ -1,5 +1,6 @@
 package com.juanroam.reservations.dto;
 
+import com.juanroam.reservations.validator.AirportFormatConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,10 @@ import lombok.Setter;
 @Getter
 public class SegmentDTO {
 
+    @AirportFormatConstraint
     private String origin;
 
+    @AirportFormatConstraint
     private String destination;
 
     private String departure;
