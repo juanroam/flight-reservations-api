@@ -1,2 +1,2 @@
 # flight-reservations-api
-Microservicios que permite validar y reservar vuelos implementando Java y Spring Boot
+Microservicio que permite validar y reservar vuelos con Java y Spring Boot
