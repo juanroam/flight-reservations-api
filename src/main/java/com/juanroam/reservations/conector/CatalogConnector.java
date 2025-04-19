@@ -5,6 +5,8 @@ import com.juanroam.reservations.conector.configuration.EndpointConfiguration;
 import com.juanroam.reservations.conector.configuration.HostConfiguration;
 import com.juanroam.reservations.conector.configuration.HttpConnectorConfiguration;
 import com.juanroam.reservations.conector.response.CityDTO;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -33,7 +35,9 @@ public class CatalogConnector {
         this.configuration = configuration;
     }
 
+    @CircuitBreaker(name = "api-catalog", fallbackMethod = "fallbackGetCity")
     public CityDTO getCity(String code) {
+        System.out.println("Calling to api-catalog");
         HostConfiguration hostConfiguration = configuration.getHosts().get(HOST);
         EndpointConfiguration endpointConfiguration = hostConfiguration.getEndpoints().get(ENDPOINT);
 
@@ -60,4 +64,29 @@ public class CatalogConnector {
                 .share()
                 .block();
     }
+
+    /**
+     * Define a behaviour when a circuit breaker exception occurs.
+     * @param code
+     * @param cnpe
+     * @return
+     */
+    private CityDTO fallbackGetCity(String code, CallNotPermittedException cnpe) {
+        System.out.println("calling fallbackGetCity-1");
+
+        return new CityDTO();
+    }
+
+    /**
+     * Define a default behaviour when an error other than a circuit breaker occurs.
+     * @param code
+     * @param exc
+     * @return
+     */
+    private CityDTO fallbackGetCity(String code, Exception exc) {
+        System.out.println("calling fallbackGetCity-2");
+
+        return new CityDTO();
+    }
+
 }

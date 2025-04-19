@@ -17,7 +17,9 @@ public enum APIError {
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND,
             "Reservation not found"),
     RESERVATION_WITH_SAME_ID(HttpStatus.BAD_REQUEST,
-            "There is a reservation with the same ID");
+            "There is a reservation with the same ID"),
+    EXCEED_REQUEST_LIMIT(HttpStatus.TOO_MANY_REQUESTS,
+            "You exceed the max number of request");
 
     /**
      * HTTP Status code.
