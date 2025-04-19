@@ -1,6 +1,9 @@
 package com.juanroam.reservations.service;
 
+import com.juanroam.reservations.conector.CatalogConnector;
+import com.juanroam.reservations.conector.response.CityDTO;
 import com.juanroam.reservations.dto.ReservationDTO;
+import com.juanroam.reservations.dto.SegmentDTO;
 import com.juanroam.reservations.enums.APIError;
 import com.juanroam.reservations.exception.ReservationException;
 import com.juanroam.reservations.model.Reservation;
@@ -20,11 +23,15 @@ public class ReservationService {
 
     private final ConversionService conversionService;
 
+    private CatalogConnector connector;
+
     @Autowired
     public ReservationService(ReservationRepository repository,
-                              ConversionService conversionService) {
+                              ConversionService conversionService,
+                              CatalogConnector connector) {
         this.repository = repository;
         this.conversionService = conversionService;
+        this.connector = connector;
     }
 
     public List<ReservationDTO> getReservations() {
@@ -43,7 +50,7 @@ public class ReservationService {
         if(Objects.nonNull(reservation.getId())) {
             throw new ReservationException(APIError.RESERVATION_WITH_SAME_ID);
         }
-
+        this.checkCity(reservation);
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
         Reservation result = repository.save(Objects.requireNonNull(transformed));
         return conversionService.convert(result, ReservationDTO.class);
@@ -53,7 +60,7 @@ public class ReservationService {
         if(getReservationById(id) == null) {
             throw new ReservationException(APIError.RESERVATION_NOT_FOUND);
         }
-
+        this.checkCity(reservation);
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
         Reservation result = repository.update(id, Objects.requireNonNull(transformed));
         return conversionService.convert(result, ReservationDTO.class);
@@ -64,5 +71,19 @@ public class ReservationService {
             throw new ReservationException(APIError.RESERVATION_NOT_FOUND);
         }
         repository.delete(id);
+    }
+
+    private void checkCity(ReservationDTO reservationDTO) {
+        for (SegmentDTO segmentDTO : reservationDTO.getItinerary().getSegment()) {
+            CityDTO origin = connector.getCity(segmentDTO.getOrigin());
+            CityDTO destination = connector.getCity(segmentDTO.getDestination());
+
+            if (origin == null || destination == null) {
+                throw new ReservationException(APIError.VALIDATION_ERROR);
+            } else {
+                System.out.print("from=" + origin.getName());
+                System.out.println(" to=" + destination.getName());
+            }
+        }
     }
 }
