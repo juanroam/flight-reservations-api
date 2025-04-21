@@ -1,5 +1,6 @@
 package com.juanroam.reservations.controller;
 
+import com.juanroam.reservations.controller.resource.ReservationResource;
 import com.juanroam.reservations.dto.ReservationDTO;
 import com.juanroam.reservations.enums.APIError;
 import com.juanroam.reservations.exception.ReservationException;
@@ -19,7 +20,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/reservation")
-public class ReservationController {
+public class ReservationController implements ReservationResource {
 
     private final ReservationService service;
 
