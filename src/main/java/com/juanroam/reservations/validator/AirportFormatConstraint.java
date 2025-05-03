@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AirportFormatConstraint {
 
-    String message() default "Invalid format for the airport";
+    String message() default "Invalid airport format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -35,14 +35,14 @@ public class ReservationController implements ReservationResource {
 
     @GetMapping
     public ResponseEntity<List<ReservationDTO>> getReservations() {
-        LOGGER.info("Obtain all the reservations");
+        LOGGER.info("Getting all the reservations");
         List<ReservationDTO> response = service.getReservations();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getReservationById(@Min(1) @PathVariable Long id) {
-        LOGGER.info("Obtain information from a reservation with {}", id);
+        LOGGER.info("Getting information from a reservation with ID {}", id);
         ReservationDTO response = service.getReservationById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -50,7 +50,7 @@ public class ReservationController implements ReservationResource {
     @PostMapping
     @RateLimiter(name = "post-reservation", fallbackMethod = "fallbackPost")
     public ResponseEntity<ReservationDTO> save(@Valid @RequestBody ReservationDTO reservation) {
-        LOGGER.info("Saving new reservation");
+        LOGGER.info("Saving the new reservation");
         ReservationDTO response = service.save(reservation);
         return  new ResponseEntity<>(response, HttpStatus.CREATED);
     }

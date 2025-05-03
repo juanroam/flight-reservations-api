@@ -8,6 +8,8 @@ import com.juanroam.reservations.enums.APIError;
 import com.juanroam.reservations.exception.ReservationException;
 import com.juanroam.reservations.model.Reservation;
 import com.juanroam.reservations.repository.ReservationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,13 @@ import java.util.Optional;
 @Service
 public class ReservationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReservationService.class);
+
     private final ReservationRepository repository;
 
     private final ConversionService conversionService;
 
-    private CatalogConnector connector;
+    private final CatalogConnector connector;
 
     @Autowired
     public ReservationService(ReservationRepository repository,
@@ -81,8 +85,7 @@ public class ReservationService {
             if (origin == null || destination == null) {
                 throw new ReservationException(APIError.VALIDATION_ERROR);
             } else {
-                System.out.print("from=" + origin.getName());
-                System.out.println(" to=" + destination.getName());
+                LOGGER.info("from={} to={}", origin.getName(), destination.getName());
             }
         }
     }
