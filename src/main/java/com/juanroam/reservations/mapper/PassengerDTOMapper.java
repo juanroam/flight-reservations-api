@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.core.convert.converter.Converter;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PassengerDTOMapper extends Converter<PassengerDTO, Passenger> {
 
     @Mapping(target = "id", ignore = true)
