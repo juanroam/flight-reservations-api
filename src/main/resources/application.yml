@@ -1,6 +1,17 @@
 spring:
   application:
     name: flight-reservations-api
+  profiles:
+    active: memory
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 management:
   info:
@@ -70,3 +81,4 @@ resilience4j:
     instances:
       post-reservation:
         base-config: default
+
